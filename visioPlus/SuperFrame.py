@@ -1,3 +1,4 @@
+#Ajouter des sous classes pour les eltms du visages et adapter les fonctions du main
 class SuperFrame:
 
     def __init__(self,aframe, emplacement, coef):
