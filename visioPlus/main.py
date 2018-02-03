@@ -27,12 +27,12 @@ def main():
         _, originalFrame = video_capture.read()
         _, frameWitRect =  video_capture.read()
 
-        visage = SuperFrame(frameWitRect, 1)
+        visage = SuperFrame(frameWitRect, 0.5)
 
         grayFace = visage
         grayFace.setFrame(tools.FrameReWrite(visage))
 
-        grayFace.setData(tools.detectSomeThings(grayFace,tools.face_cascade,1.1,4))
+        grayFace.setData(tools.detectSomeThings(grayFace,tools.face_cascade,1.1,3))
         grayFace.setFaces(tools.extractPartsPicture(grayFace,originalFrame))
 
         tools.drowRect(grayFace,frameWitRect)
