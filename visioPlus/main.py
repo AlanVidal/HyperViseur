@@ -14,12 +14,12 @@ DEFAULT_FRONTAL_Nose_CLASSIFIER = './haarcascades/Nariz.xml'
 def showPicts(name,frames): #Permet d'afficher un enssemble d'image
     i = 0
     for(frame) in frames:
-            cv2.imshow(name + str(i), frame)
+            cv2.imshow(name + str(i), frame.getFrame())
             i = i+1
 
 def FrameReWrite(aFrame): #Modifie une image
     newFrame = cv2.cvtColor(aFrame.getFrame(),cv2.COLOR_BGR2GRAY)
-    newFrame =cv2.resize(newFrame,(0,0),fx=aFrame.getReduceCoef(),fy=aFrame.getReduceCoef()) 
+    newFrame =cv2.resize(newFrame,(0,0),fx=aFrame.getCoef(),fy=aFrame.getCoef()) 
     return newFrame
 
 def detectSomeThings(aFrame,aCascade, aCoef, aNumb):  #Renvoi un tableau correspondant a ce qui est recherché dans la cascade
@@ -28,14 +28,14 @@ def detectSomeThings(aFrame,aCascade, aCoef, aNumb):  #Renvoi un tableau corresp
 
 def extractPartsPicture(aFrame,originalFrame): #A partir d'enssemble de coordonnées, renvois un enssemble de frame
     tab = []
-    aCoef =  aFrame.getCoef()
+    aCoef =  int(aFrame.getReduceCoef())
     for (x, y, w, h) in aFrame.getData():
             tab.append(originalFrame[y*aCoef:y*aCoef + h*aCoef, x*aCoef:x*aCoef + w*aCoef])
     return tab
     
 def drowRect(aFrame, frameAmodif):
     for (x, y, w, h) in aFrame.getData():
-        aCoef = aFrame.getCoef()
+        aCoef = int(aFrame.getReduceCoef())
         cv2.rectangle(img=frameAmodif, 
             pt1=(x*aCoef, y*aCoef),
             pt2=(x*aCoef + w*aCoef, y*aCoef + h*aCoef),
@@ -53,15 +53,17 @@ def main(face_cascade, eye_cascade,nose_cascade):
         _, originalFrame = video_capture.read()
         _, frameWitRect =  video_capture.read()
 
-        visage = SuperFrame(frameWitRect,0, 1 )
+        visage = SuperFrame(frameWitRect,0, 0.5)
 
         grayFace = visage
         grayFace.setFrame(FrameReWrite(visage))
 
-        grayFace.setData(detectSomeThings(grayFace,face_cascade,1.5,5))
-        grayFace.setEnssemble(extractPartsPicture(grayFace,originalFrame))
-        showPicts("d",grayFace.getEnssemble())
+        grayFace.setData(detectSomeThings(grayFace,face_cascade,1.3,5))
+        grayFace.setFaces(extractPartsPicture(grayFace,originalFrame))
+
         drowRect(grayFace,frameWitRect)
+
+        showPicts("d",grayFace.getFaces())
 
         cv2.imshow("sdd", grayFace.frame)
         cv2.imshow("f", frameWitRect)

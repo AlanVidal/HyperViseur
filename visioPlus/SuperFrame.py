@@ -6,7 +6,7 @@ class SuperFrame:
         self.emplacement = emplacement
         self.coef = coef
         self.data = []
-        self.enssemble = []
+        self.faces = []
 
 
     def getFrame(self):
@@ -19,10 +19,11 @@ class SuperFrame:
         return self.coef
 
     def getReduceCoef(self):
-        return 1/self.coef
+        print(1/self.coef)
+        return (1/self.coef) 
 
     def setFrame(self,aFrame):
-        self.frame = aFrame        
+        self.frame = aFrame
 
     def getData(self):
         return self.data
@@ -30,10 +31,17 @@ class SuperFrame:
     def setData(self, data):
         self.data = data
 
-    def getEnssemble(self):
-        return self.enssemble
+    def getFaces(self):
+        return self.faces
 
-    def setEnssemble(self,enssemble):
-        self.enssemble = enssemble
+    def setFaces(self,faces):
+        for frame in faces:
+            self.faces.append(FaceFrame(frame, 0, self.coef))
 
-        
+class FaceFrame(SuperFrame):
+        def __init__(self,aframe, emplacement, coef):
+            SuperFrame.__init__(self,aframe, emplacement, coef)
+            self.eyes = []
+
+        def setEyes(eyes):
+            self.eyes = eyes
