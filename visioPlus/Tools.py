@@ -18,21 +18,26 @@ class Tools :
         return newFrame
 
     def detectSomeThings(self,aSuperFrame,aCascade, aCoef, aNumb):  #Renvoi un tableau correspondant a ce qui est recherché dans la cascade
-        data = aCascade.detectMultiScale(aSuperFrame.getFrame(), aCoef, aNumb)
+        data = aCascade.detectMultiScale(aSuperFrame, aCoef, aNumb)
         return data
 
-    def extractPartsPicture(self,aSuperFrame,originalFrame): #A partir d'enssemble de coordonnées, renvois un enssemble de frame
+
+    def extractPartsPicture2(self,aList,originalFrame, coef): #A partir d'enssemble de coordonnées, renvois un enssemble de frame
         tab = []
-        aCoef =  int(aSuperFrame.getReduceCoef())
-        for (x, y, w, h) in aSuperFrame.getData():
-                tab.append(originalFrame[y*aCoef:y*aCoef + h*aCoef, x*aCoef:x*aCoef + w*aCoef])
+        for (x, y, w, h) in aList:
+                print(aList)
+                tab.append(originalFrame.getFrame()[int(y/coef):int(y/coef) + int(h/coef), int(x/coef):int(x/coef )+ int(w/coef)])
         return tab
         
-    def drowRect(self,aFrame, frameAmodif):
-        for (x, y, w, h) in aFrame.getData():
-            aCoef = int(aFrame.getReduceCoef())
+    def detectSomeThingsAndCapt(self,aSuperFrame,aCascade, aCoef, aNumb, originalFrame):  #Renvoi un tableau correspondant a ce qui est recherché dans la cascade
+        data = aCascade.detectMultiScale(aSuperFrame.getFrame(), aCoef, aNumb)
+        return [self.extractPartsPicture2(data, originalFrame,aSuperFrame.getReduceCoef() ),data, originalFrame.getCoef()] #Retravailler toute cette partie !!!!!!
+
+
+    def drowRect(self,list, frameAmodif): # A modifier
+        for (x, y, w, h) in list:
             cv2.rectangle(img=frameAmodif, 
-                pt1=(x*aCoef, y*aCoef),
-                pt2=(x*aCoef + w*aCoef, y*aCoef + h*aCoef),
+                pt1=(x, y),
+                pt2=(x + w, y + h),
                 color=(255, 255, 245),
                 thickness=2)
