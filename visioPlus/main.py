@@ -1,22 +1,24 @@
-#Creer une interface pour interagire avec les objets SuperFrame
+# Creer une interface pour interagire avec les objets SuperFrame
 
+from cgitb import text
+from cmath import rect
 import os
 import sys
 import cv2
-import numpy as np
-from cgitb import text
-from cmath import rect
 from SuperFrame import SuperFrame
 from Tools import Tools
+import numpy as np
+
 
 DEFAULT_FRONTAL_Nose_CLASSIFIER = './haarcascades/Nariz.xml'
 
 
-def showPicts(name,frames): #Permet d'afficher un enssemble d'image
+def showPicts(name, frames):  # Permet d'afficher un enssemble d'image
     i = 0
     for(frame) in frames:
             cv2.imshow(name + str(i), frame.getFrame())
-            i = i+1
+            i = i + 1
+
 
 def main():
 
@@ -25,31 +27,32 @@ def main():
 
     while True:
         _, originalFrame = video_capture.read()
-        _, frameWitRect =  video_capture.read()
+        _, frameWitRect = video_capture.read()
 
-        visage = SuperFrame(frameWitRect, 0.5)
+        visage = SuperFrame(frameWitRect,0.5)
 
         grayFace = visage
         grayFace.setFrame(tools.FrameReWrite(visage))
 
-        grayFace.setData(tools.detectSomeThings(grayFace,tools.face_cascade,1.1,3))
-        grayFace.setFaces(tools.extractPartsPicture(grayFace,originalFrame))
+        grayFace.setData(tools.detectSomeThings(grayFace, tools.face_cascade, 1.1, 3))
+        grayFace.setFaces(tools.extractPartsPicture(grayFace, originalFrame))
 
-        tools.drowRect(grayFace,frameWitRect)
+        tools.drowRect(grayFace, frameWitRect)
         test = grayFace.getFaces()
         for face in test:
-            face.analyseEyes(tools,1.3,3)
-            showPicts("Eye",face.getEyes())
+            face.analyseEyes(tools, 1.3, 3)
+           # showPicts("Eye", face.getEyes())
             for eye in face.getEyes():
                 tools.drowRect(eye, frameWitRect)
         
-        showPicts("d",grayFace.getFaces())
+        showPicts("d", grayFace.getFaces())
         cv2.imshow("sdd", grayFace.frame)
         cv2.imshow("f", frameWitRect)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     cv2.destroyAllWindows()
+
 
 if __name__ == '__main__':
     main()

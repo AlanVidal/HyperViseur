@@ -37,7 +37,6 @@ class SuperFrame:
     def setFaces(self,faces):
         i = 0
         for frame in faces:
-            print(self.getData()[i])
             self.faces.append(FaceFrame(frame, self.getData()[i], self.coef))
 
 class FaceFrame(SuperFrame):
@@ -45,25 +44,21 @@ class FaceFrame(SuperFrame):
         def __init__(self,aframe, emplacement, coef):
             SuperFrame.__init__(self,aframe, coef)
             self.emplacement = emplacement
-
             self.eyes = []
     
-        def setEyes(self,aEyes):
-            i = 0
-            for eye in aEyes:
-                f = lambda x,y :[x[0]+y[0],x[1]+y[1],x[2],x[3]] 
-                test = f(self.getData()[i], self.emplacement)
-
-                print("Data" + str(self.getData()[i]) + " + " + str(self.emplacement) + " " + str(test))
-
-                self.eyes.append(EyeFrame(eye, test, self.coef))
-                i = i + 1
         def analyseEyes(self,tools,aCoef, aNumb):
-            self.data = tools.detectSomeThings(self, tools.eye_cascade,aCoef,aNumb)
-            eyes = self.setEyes(tools.extractPartsPicture(self,self.frame))
-           
-            if eyes != None :
-                self.setEyes(eyes)
+            self.data = tools.detectSomeThings(self, tools.eye_cascade,aCoef,aNumb)            
+
+            if len(self.data) == 2 :
+                i = 0
+                for eye in tools.extractPartsPicture(self,self.frame):
+                    print(self.coef)
+                    f = lambda x,y :[ int( (x[0]*self.coef+y[0]) ) ,int( (x[1]*self.coef+y[1]) ),int(x[2]*self.coef),int(x[3]*self.coef)] 
+                    newEmplacement = f(self.getData()[i], self.emplacement) #Permet de recalculer l'emplacement et la taille sur l'image d'origine.
+                    self.eyes.append(EyeFrame(eye, newEmplacement, self.coef))
+                    i = i + 1
+            else :
+                print(str(len(self.data)))
 
         def getEyes(self):
             return self.eyes
@@ -71,7 +66,6 @@ class FaceFrame(SuperFrame):
 class EyeFrame(SuperFrame):
         def __init__(self,aframe, emplacement, coef):
             SuperFrame.__init__(self,aframe, coef)
-            print(coef)
             self.emplacement = emplacement
             self.data.append(emplacement)
             
